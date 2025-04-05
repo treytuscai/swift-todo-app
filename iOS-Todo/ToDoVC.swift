@@ -10,9 +10,9 @@ import UIKit // Required for building user interfaces in iOS apps
 import CoreData // Used for managing the app’s data model and persistent storage. Core Data isn’t a database itself. It’s a tool Apple gives us to manage app data as Swift objects.
 
 // This class controls the main to-do list screen
-// Object manages a view hierarchy, mananges the table view, provides data and cells to our table view
-// Subclass of UIVC: can use all the functionality
+// Subclass of UIVC: It inherits from UIViewController, which means it has all the built-in features that allow it to manage and display the screen.
 // Conforms to UITable: these are protocols that ToDoVC has agreed to implement.
+// Object manages a view hierarchy, mananges the table view, provides data and cells to our table view
 public class ToDoVC: UIViewController, UITableViewDelegate, UITableViewDataSource  {
     
     @IBOutlet weak var TaskTableView: UITableView! // Outlet connects the table view in the storyboard to this class
