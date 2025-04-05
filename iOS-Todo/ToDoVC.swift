@@ -28,7 +28,6 @@ public class ToDoVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         self.fetchTasks()
     }
     
-    
     public func fetchTasks() {
         let fetchRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
         
