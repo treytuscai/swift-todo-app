@@ -12,6 +12,7 @@ public class AddTaskVC: UIViewController {
     
     @IBOutlet weak var nameField: UITextField!
     @IBOutlet weak var categoryField: UITextField!
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,16 +24,14 @@ public class AddTaskVC: UIViewController {
             // Optionally show an alert if required fields are empty
             return
         }
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        let context = appDelegate.persistentContainer.viewContext
         
-        let newTask = TaskEntity(context: context)
+        let newTask = TaskEntity(context: self.context)
         newTask.name = taskName
         newTask.category = taskCategory
         newTask.completed = false
         
         do {
-            try context.save()
+            try self.context.save()
             print("Task saved successfully!")
         } catch let error as NSError {
             print("Could not save task: \(error), \(error.userInfo)")

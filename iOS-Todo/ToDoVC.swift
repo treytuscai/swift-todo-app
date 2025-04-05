@@ -13,11 +13,12 @@ public class ToDoVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     
     @IBOutlet weak var TaskTableView: UITableView!
     public var Tasks: [TaskEntity] = []
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Tasks"
-        TaskTableView.register(UITableViewCell.self, forCellReuseIdentifier: "TaskCell")
+        TaskTableView.register(TaskCell.self, forCellReuseIdentifier: "TaskCell")
         TaskTableView.delegate = self
         TaskTableView.dataSource = self
     }
@@ -29,12 +30,10 @@ public class ToDoVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     
     
     public func fetchTasks() {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        let context = appDelegate.persistentContainer.viewContext
         let fetchRequest: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
         
         do {
-            Tasks = try context.fetch(fetchRequest)
+            Tasks = try self.context.fetch(fetchRequest)
             TaskTableView.reloadData()
         } catch let error as NSError {
             print("Could not fetch tasks: \(error), \(error.userInfo)")
@@ -46,15 +45,28 @@ public class ToDoVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath)
-        let task = Tasks[indexPath.row]
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath) as? TaskCell else {
+            return UITableViewCell()
+        }
 
-        var config = cell.defaultContentConfiguration()
-        config.text = task.name
-        config.secondaryText = task.category ?? "Uncategorized" + (task.completed ? " ✅" : "")
-        cell.contentConfiguration = config
+        let task = Tasks[indexPath.row]
+        cell.configure(with: task)
+
+        cell.onDeleteTapped = {
+            self.context.delete(task)
+            self.Tasks.remove(at: indexPath.row)
+            try? self.context.save()
+            self.TaskTableView.deleteRows(at: [indexPath], with: .automatic)
+        }
 
         return cell
+    }
+    
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let task = Tasks[indexPath.row]
+        task.completed.toggle()
+        try? self.context.save()
+        tableView.reloadRows(at: [indexPath], with: .automatic)
     }
     
 }
