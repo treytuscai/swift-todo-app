@@ -11,6 +11,8 @@ import CoreData // Used for managing the app’s data model and persistent stora
 
 // This class controls the main to-do list screen
 // Object manages a view hierarchy, mananges the table view, provides data and cells to our table view
+// Subclass of UIVC: can use all the functionality
+// Conforms to UITable: these are protocols that ToDoVC has agreed to implement.
 public class ToDoVC: UIViewController, UITableViewDelegate, UITableViewDataSource  {
     
     @IBOutlet weak var TaskTableView: UITableView! // Outlet connects the table view in the storyboard to this class
@@ -80,7 +82,7 @@ public class ToDoVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             self.TaskTableView.deleteRows(at: [indexPath], with: .automatic) //Removes the deleted row from the table view with an animated deletion.
         }
 
-        return cell //This returns the final cell to the table view for display.
+        return cell // This returns the final cell to the table view for display.
     }
     
     // This method is triggered when the user taps on a row in the table view. It’s used to mark a task as completed or not completed.
